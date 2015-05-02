@@ -1,34 +1,14 @@
 from __future__ import print_function
 from __future__ import division
-from os import environ
-from os import getcwd
 from os import walk
-from os import system
-from pdb import set_trace
-from random import uniform as rand
-from random import randint as randi
-from random import sample
-from subprocess import call
-from subprocess import PIPE
-import pandas
-import sys
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from scipy.constants.codata import precision
-# Update PYTHONPATH
-HOME = environ['HOME']
-axe = HOME + '/git/axe/axe/'  # AXE
-pystat = HOME + '/git/pystat/'  # PySTAT
-cwd = getcwd()  # Current Directory
-WHAT = '../SOURCE/'
-sys.path.extend([axe, pystat, cwd, WHAT])
-from table import clone
-from sk import rdivDemo
-from sk import scottknott
-from smote import SMOTE
-from methods1 import *
-from numpy import median
 import pandas as pd
+from random import shuffle
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from axe.table import clone
+from axe.sk import rdivDemo
+from smote import SMOTE
+from methods1 import createTbl
 
 
 def formatData(tbl):
@@ -134,16 +114,16 @@ class main():
 
   " Main Class"
 
-  def __init__(self, dir='./Data/'):
-    self.dir = dir
+  def __init__(self, directory='./Data/'):
+    self.dir = directory
 
-  def file2pandas(self, file):
-    fread = open(file, 'r')
+  def file2pandas(self, File):
+    fread = open(File, 'r')
     rows = [line for line in fread]
     head = rows[0].strip().split(',')  # Get the headers
     body = [[1 if r == 'Y' else 0 if r == 'N' else r
              for r in row.strip().split(',')] for row in rows[1:]]
-    return pandas.DataFrame(body, columns=head)
+    return pd.DataFrame(body, columns=head)
 
   def formatData(self, tbl):
     Rows = [i.cells for i in tbl._rows]
@@ -151,10 +131,7 @@ class main():
     return pd.DataFrame(Rows, columns=headers)
 
   def explorer2(self):
-    files = [filenames for (
-        dirpath,
-        dirnames,
-        filenames) in walk(self.dir)][0]
+    files = [filenames for (_, __, filenames) in walk(self.dir)][0]
     for f in files:
       return [self.dir + f]
 
@@ -179,7 +156,6 @@ class main():
     f = []
     g = []
     chunks = lambda l, n: [l[i:i + n] for i in range(0, len(l), int(n))]
-    from random import shuffle, sample
     rows = data._rows
     shuffle(rows)
     sqe = chunks(rows, int(len(rows) / k))
@@ -191,7 +167,6 @@ class main():
       train, test = clone(data, rows=[
           i.cells for i in trainRows]), clone(data, rows=[
               i.cells for i in testRows])
-      train_df = formatData(train)
       test_df = formatData(test)
       actual = test_df[
           test_df.columns[-2]].astype('float32').tolist()
