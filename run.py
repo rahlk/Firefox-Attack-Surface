@@ -245,7 +245,7 @@ def _doCrossVal():
     cv_f += f
     cv_g += g
 
-    print("After Sampling") if smote else print("Before Sampling")
+    print("## After Sampling") if smote else print("## Before Sampling")
     rdivDemo([cv_prec,
               cv_sen,
               cv_spec,
