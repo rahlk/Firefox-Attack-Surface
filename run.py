@@ -40,6 +40,8 @@ def formatData(tbl):
 
 class ABCD():
 
+  "Statistics Stuff, confusion matrix, all that jazz..."
+
   def __init__(self, before, after):
     self.actual = before
     self.predicted = after
@@ -70,6 +72,8 @@ class ABCD():
 
 
 class predictor():
+
+  "CART and Random Forest of trees"
 
   def __init__(
           self,
@@ -127,7 +131,9 @@ class predictor():
     return preds
 
 
-class fileHandler():
+class main():
+
+  " Main Class"
 
   def __init__(self, dir='./Data/'):
     self.dir = dir
@@ -229,7 +235,9 @@ def _doCrossVal():
     cv_prec = []
     cv_f = []
     cv_g = []
-    acc, sen, spec, prec, f, g = fileHandler().crossval(_s=smote, k=5)
+
+    acc, sen, spec, prec, f, g = main().crossval(_s=smote, k=10)
+
     cv_acc += acc
     cv_sen += sen
     cv_spec += spec
@@ -237,25 +245,15 @@ def _doCrossVal():
     cv_f += f
     cv_g += g
 
-  # print(r'### Precision')
-    try:
-      rdivDemo([cv_prec,
-                cv_sen,
-                cv_spec,
-                cv_acc,
-                cv_f,
-                cv_g],
-               isLatex=False)
-    except:
-      set_trace()
-# print(r'### Sensitivity')
-#   rdivDemo(cv_sen, isLatex=False)
-# print(r'### Sensitivity')
-#   rdivDemo(cv_spec, isLatex=False)
-#   rdivDemo(cv_prec, isLatex=False)
-#
-#   rdivDemo(cv_f, isLatex=False)
-#   rdivDemo(cv_g, isLatex=False)
+    print("After Sampling") if smote else print("Before Sampling")
+    rdivDemo([cv_prec,
+              cv_sen,
+              cv_spec,
+              cv_acc,
+              cv_f,
+              cv_g],
+             isLatex=False)
+  rdivDemo(cv_spec, isLatex=False)
 
 if __name__ == '__main__':
   _doCrossVal()
