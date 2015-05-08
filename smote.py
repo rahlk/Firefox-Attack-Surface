@@ -84,12 +84,12 @@ def SMOTE(data=None, k=5, atleast=10, atmost=51, bugIndx=2, resample=False):
   atmost = min(counts)
   rows = data._rows
   for u, n in zip(unique, counts):
-   # if n < atleast:
-    #  newCells.extend(populate([r for r in rows if r.cells[-2] == u]))
+    if n < atleast:
+      newCells.extend(populate([r for r in rows if r.cells[-2] == u]))
     if n > atmost:
-      newCells.extend(depopulate([r for r in rows if r.cells[-1] == u]))
+      newCells.extend(depopulate([r for r in rows if r.cells[-2] == u]))
     else:
-      newCells.extend([r for r in rows if r.cells[-1] == u])
+      newCells.extend([r for r in rows if r.cells[-2] == u])
 
   return clone(data, rows=[k.cells for k in newCells])
 

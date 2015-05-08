@@ -59,8 +59,8 @@ class predictor():
           train=None,
           test=None,
           tuning=None,
-          smoteit=False,
-          duplicate=True):
+          smoteit=True,
+          duplicate=False):
     self.train = train
     self.test = test
     self.tuning = tuning
@@ -94,8 +94,8 @@ class predictor():
     if self.smoteit:
       self.train = SMOTE(
           self.train,
-          atleast=50,
-          atmost=100,
+          atleast=500,
+          atmost=500,
           resample=self.duplicate)
 
     clf = RandomForestClassifier(random_state=1)
@@ -148,7 +148,7 @@ class main():
         result.append(el)
     return result
 
-  def kFoldCrossVal(self, data, k=5):
+  def kFoldCrossVal(self, data, k=5, smote = False):
     acc = []
     sen = []
     spec = []
@@ -170,7 +170,7 @@ class main():
       test_df = formatData(test)
       actual = test_df[
           test_df.columns[-2]].astype('float32').tolist()
-      before = predictor(train=train, test=test).rforest()
+      before = predictor(train=train, test=test, smoteit=smote).rforest()
       acc.append(ABCD(before=actual, after=before).all()[3])
       sen.append(ABCD(before=actual, after=before).all()[0])
       spec.append(ABCD(before=actual, after=before).all()[1])
@@ -189,8 +189,8 @@ class main():
     cv_g = ['                   g']
     for _ in xrange(k):
       proj = self.explorer2()
-      data = createTbl(proj, isBin=False, _smote=_s)
-      a, b, c, d, e, f = self.kFoldCrossVal(data, k=k)
+      data = createTbl(proj, isBin=False, _smote=False)
+      a, b, c, d, e, f = self.kFoldCrossVal(data, k=k, smote=_s)
       cv_acc.extend(a)
       cv_sen.extend(b)
       cv_spec.extend(c)
